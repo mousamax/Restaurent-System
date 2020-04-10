@@ -6,6 +6,7 @@
 class Restaurant;	//Forward declation
 
 //The base class for all possible events in the system (abstract class)
+//arrival event, promotion event and cancellation event
 class Event
 {
 protected:

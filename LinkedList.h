@@ -1,8 +1,8 @@
+#pragma once
 #include <iostream>
-#include"Generic_DS/Node.h"
+#include "Generic_DS/Node.h"
+#include "Rest/Order.h"
 using namespace std;
-
-
 template <typename T>
 class LinkedList
 {
@@ -10,12 +10,12 @@ private:
 	Node<T>* Head;//Pointer to the head of the list
 	Node<T>* Tail;
 	int count;
+	Order* efg;
 public:
 	Node<T>* gethead()
 	{
 		return Head;
 	}
-
 	//returns the count of the number of elements in the nodes.
 	int getcount()
 	{
@@ -71,18 +71,19 @@ public:
 
 	//InsertEnd 
 	//inserts a new node at end if the list
-	void InsertEnd(const T &data){
-		if (Head==nullptr) {
-			Head=new Node<T>(data);
+	void InsertEnd(const T& data)
+	{
+		if (Head == nullptr) {
+			Head = new Node<T>(data);
 			return;
 		}
-		
-		Node<T> *ptr=Head;
 
-		while(ptr->getNext()!=NULL)
-			ptr=ptr->getNext();
+		Node<T>* ptr = Head;
 
-		Node<T>* ptr2=new Node<T>(data);
+		while (ptr->getNext() != NULL)
+			ptr = ptr->getNext();
+
+		Node<T>* ptr2 = new Node<T>(data);
 		ptr->setNext(ptr2);
 	}
 
@@ -205,7 +206,7 @@ public:
 		p->setNext(NULL);
 
 	}
-	
+
 
 	//DeleteNodes
 	//deletes ALL node with the given value (if found) and returns true
@@ -320,10 +321,28 @@ public:
 		}
 		return freq;
 	}
-
+	//
+	Order* Get_Order_ByID(int id)
+	{
+		bool found = false;
+		Node<T>* p = Head;
+		while (!found && p != NULL)
+		{
+			if (p->getItem()->GetID() == id)
+			{
+				found = true;
+			}
+			else
+			{
+				p = p->getNext();
+			}
+		}
+		return p->getItem();
+	}
 	//List is being desturcted ==> delete all items in the list
 	~LinkedList()
 	{
 		DeleteAll();
 	}
 };
+
