@@ -1,8 +1,8 @@
 #pragma once
 #include <iostream>
-#include "Rest/Order.h"
-#include "Events/Event.h"
-#include "LinkedList.h"
+#include "..\Rest\Order.h"
+#include "..\Events\Event.h"
+#include "..\Generic_DS\LinkedList.h"
 
 class PromoteEvent :
 	public Event
@@ -16,7 +16,6 @@ class PromoteEvent :
 public:
 
 	PromoteEvent(int TS, int id, double Exmony);
-
 
 	void Execute(Restaurant* pRest);
 };

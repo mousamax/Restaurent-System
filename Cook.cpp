@@ -36,7 +36,14 @@ void Cook::setType(ORD_TYPE t)
 {
 	type = t;
 }
-
+void Cook::setSpeed(int s)
+{
+     speed = s;
+}
+int Cook::GetSpeed()
+{
+     return speed;
+}
 void Cook::setBreakDuration(int b)
 {
 	BreakDuration = b;

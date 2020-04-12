@@ -2,12 +2,14 @@
 #define __RESTAURANT_H_
 
 
-#include "..\Defs.h"
+//#include "..\Defs.h"
 #include "..\CMUgraphicsLib\CMUgraphics.h"
 #include "..\GUI\GUI.h"
 #include "..\Generic_DS\Queue.h" 
 #include "..\Events\Event.h"
-#include "Order.h"
+//#include "Order.h"
+#include "..\Generic_DS\LinkedList.h" 
+
 
 //////////////////////////////
 #include<fstream>
@@ -26,15 +28,15 @@ private:
 	/// ==>
 
 	Queue<Order*> VIP_Waiting_Queue;
-	//LinkedList<Order*> Normal_LinkedLlist;
+	LinkedList<Order*> Normal_LinkedLlist_Waiting;
 	Queue<Order*> Vegan_Waiting_Queue;
 	//
 	Queue<Order*> VIP_InService_Queue;
-	//LinkedList<Order*> Normal_LinkedLlist;
+	LinkedList<Order*>Normal_LinkedLlist_InService;
 	Queue<Order*> Vegan_InService_Queue;
 	//
 	Queue<Order*> VIP_Finished_Queue;
-	//LinkedList<Order*> Normal_LinkedLlist;
+	LinkedList<Order*> Normal_LinkedLlist_Finished;
 	Queue<Order*> Vegan_Finished_Queue;
 	//
 	
@@ -97,6 +99,7 @@ public:
 	void FillDrawingList();
 
 	//
+	void Cooks_data();
 	// TODO: Add More Member Functions As Needed
 	void Fileloading();
 
@@ -114,7 +117,9 @@ public:
 	void Addto_InService_Queue(Order* po);
 	void Addto_Finished_Queue(Order* po);
 	/// ================================================================================================== 
-	LinkedList<Order*> GetNormalOrdersList();
+	LinkedList<Order*> GetNormalOrdersListWaiting();
+	LinkedList<Order*> GetNormalOrdersListInService();		  
+    LinkedList<Order*>GetNormalOrdersListFinished();
 };
 
 #endif

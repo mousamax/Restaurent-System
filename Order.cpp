@@ -1,5 +1,5 @@
 #include "Order.h"
-#include "..\Rest\Restaurant.h"
+//#include "..\Rest\Restaurant.h"
 
 Order::Order(int id, ORD_TYPE r_Type)
 {
@@ -93,10 +93,11 @@ int Order::getFinishTime()
 
 int Order::calcpriority()
 {
+	int p = 0;
 	if (this->GetType() != TYPE_NRM && this->GetType() != TYPE_VGAN)
 	{
-		//priority equation;
-
+		p = (((this->getTotalMoney() / this->getordersize()) * this->getTotalMoney()) + (100 / this->getArrivalTime())) / 10;
+		return p;
 	}
 	else if (this->GetType() == TYPE_VGAN)
 	{

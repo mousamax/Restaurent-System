@@ -1,5 +1,4 @@
 #include "ArrivalEvent.h"
-#include "..\Rest\Restaurant.h"
 
 ArrivalEvent::ArrivalEvent(int eTime, int oID, ORD_TYPE oType, int SIZE, double Money) :Event(eTime, oID)
 {
@@ -7,7 +6,6 @@ ArrivalEvent::ArrivalEvent(int eTime, int oID, ORD_TYPE oType, int SIZE, double 
 	Size = SIZE;
 	OrdMoney = Money;
 	TimeStep = eTime;
-
 }
 
 void ArrivalEvent::Execute(Restaurant* pRest)
@@ -24,5 +22,4 @@ void ArrivalEvent::Execute(Restaurant* pRest)
 	///Remove the next code lines in phases 1&2
 
 	pRest->AddtoDemoQueue(pOrd);
-
 }

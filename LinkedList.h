@@ -1,7 +1,9 @@
 #pragma once
 #include <iostream>
-#include "Generic_DS/Node.h"
-#include "Rest/Order.h"
+#include "Node.h"
+#include "..\GUI\GUI.h"
+#include "..\Rest\Order.h"
+
 using namespace std;
 template <typename T>
 class LinkedList
@@ -339,10 +341,26 @@ public:
 		}
 		return p->getItem();
 	}
+
+	void PrintOrders()
+	{
+		GUI* pGUI;
+		Node<T>* p = Head;
+
+		while (p)
+		{
+			pGUI->AddToDrawingList(p->getItem());
+			p = p->getNext();
+		}
+
+
+	}
 	//List is being desturcted ==> delete all items in the list
 	~LinkedList()
 	{
 		DeleteAll();
 	}
 };
+
+
 

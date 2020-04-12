@@ -1,13 +1,14 @@
 #include <cstdlib>
 #include <time.h>
 #include <iostream>
-using namespace std;
 
-#include "..\PromoteEvent.h"
+
 #include "Restaurant.h"
 #include "..\Events\ArrivalEvent.h"
-#include "..\Events\ArrivalEvent.h"
-#include "..\CancellationEvent.h"
+#include "..\Events\PromoteEvent.h"
+#include "..\Events\CancellationEvent.h"
+
+//using namespace std;
 
 Restaurant::Restaurant()
 {
@@ -30,13 +31,7 @@ void Restaurant::RunSimulation()
 		break;
 	case MODE_DEMO:
 		Just_A_Demo();
-
 	};
-
-
-
-
-
 }
 
 
@@ -56,7 +51,6 @@ void Restaurant::ExecuteEvents(int CurrentTimeStep)
 		EventsQueue.dequeue(pE);	//remove event from the queue
 		delete pE;		//deallocate event object from memory
 	}
-
 }
 
 
@@ -68,36 +62,62 @@ Restaurant::~Restaurant()
 
 void Restaurant::FillDrawingList()
 {
-	for(int i = 0;i<Num_NormCook;i++)
+	for (int i = 1;i <= Num_NormCook;i++)
 	{
 		pGUI->AddToDrawingList(&pCook_NRM[i]);
 	}
-	for(int i = 0;i<Num_VipCook;i++)
+	for (int i = Num_NormCook + 1;i <= Num_VipCook + Num_NormCook;i++)
 	{
 		pGUI->AddToDrawingList(&pCook_VIP[i]);
 	}
-	for(int i = 0;i<Num_VegCook;i++)
+	for (int i = Num_VipCook + Num_NormCook + 1;i <= Num_VegCook + Num_VipCook + Num_NormCook;i++)
 	{
 		pGUI->AddToDrawingList(&pCook_Veg[i]);
 	}
-	//  Change ........
-	/*for(int i = 0;i<Num_NormCook;i++)
-	{
-	pGUI->AddToDrawingList(pOrd);
-	}*/
 
-	
-	//This function should be implemented in phase1
+	Order* pOrd;
+	// 
+	Normal_LinkedLlist_Waiting.PrintOrders();
+	//
+
+	if (VIP_Waiting_Queue.peekFront(pOrd))
+		pGUI->AddToDrawingList(pOrd);
+
+	if (Vegan_Waiting_Queue.peekFront(pOrd))
+		pGUI->AddToDrawingList(pOrd);
+
+	if (VIP_InService_Queue.peekFront(pOrd))
+	{
+		pGUI->AddToDrawingList(pOrd);
+	}
+	if (VIP_Finished_Queue.peekFront(pOrd))
+	{
+		pGUI->AddToDrawingList(pOrd);
+	}
+	if (Vegan_Finished_Queue.peekFront(pOrd))
+	{
+		pGUI->AddToDrawingList(pOrd);
+	}
+
 	//It should add ALL orders and Cooks to the drawing list
 	//It should get orders from orders lists/queues/stacks/whatever (same for Cooks)
 	//To add orders it should call function  void GUI::AddToDrawingList(Order* pOrd);
 	//To add Cooks it should call function  void GUI::AddToDrawingList(Cook* pCc);
-	
 }
 //// 
-LinkedList<Order*> Restaurant::GetNormalOrdersList()
+LinkedList<Order*> Restaurant::GetNormalOrdersListWaiting()
 {
-	return Normal_LinkedLlist;
+	return Normal_LinkedLlist_Waiting;
+}
+
+LinkedList<Order*> Restaurant::GetNormalOrdersListFinished()
+{
+	return Normal_LinkedLlist_Finished;
+}
+
+LinkedList<Order*> Restaurant::GetNormalOrdersListInService()
+{
+	return Normal_LinkedLlist_InService;
 }
 
 void Restaurant::Fileloading()
@@ -116,6 +136,7 @@ void Restaurant::Fileloading()
 	}
 	else
 	{
+		string test;
 		File >> s;
 		Num_NormCook = atoi(s.c_str());
 		File >> s;
@@ -152,7 +173,7 @@ void Restaurant::Fileloading()
 				File >> s;
 				if (s == "N")
 				{
-					File >> s;
+					File >> s;  					test = s;
 					int n1 = atoi(s.c_str());
 					File >> s;
 					int n2 = atoi(s.c_str());
@@ -211,12 +232,44 @@ void Restaurant::Fileloading()
 				EventsQueue.enqueue(rPromote);
 			}
 		}
-		pGUI->PrintMessage(s);
+		pGUI->PrintMessage(test);
+		pGUI->PrintMessage("Click To Continue ... Mousa");
 		pGUI->waitForClick();
 
 	}
 	File.close();
 }
+void Restaurant::Cooks_data()
+{
+	pCook_VIP = new Cook[Num_VipCook];
+	pCook_NRM = new Cook[Num_NormCook];
+	pCook_Veg = new Cook[Num_VegCook];
+	// Normal
+	for (int i = 1;i <= Num_NormCook;i++)
+	{
+		pCook_NRM[i].setID(i);
+		pCook_NRM[i].setType(TYPE_NRM);
+		pCook_NRM[i].setBreakDuration(BN);
+		pCook_NRM[i].setSpeed(SN);
+	}
+	// VIP
+	for (int i = Num_NormCook + 1;i <= Num_VipCook + Num_NormCook;i++)
+	{
+		pCook_VIP[i].setID(i);
+		pCook_VIP[i].setType(TYPE_VIP);
+		pCook_VIP[i].setBreakDuration(BV);
+		pCook_VIP[i].setSpeed(SV);
+	}
+	// Vegan
+	for (int i = Num_VipCook + Num_NormCook + 1;i <= Num_VegCook + Num_VipCook + Num_NormCook;i++)
+	{
+		pCook_Veg[i].setID(i);
+		pCook_Veg[i].setType(TYPE_VGAN);
+		pCook_Veg[i].setBreakDuration(BG);
+		pCook_Veg[i].setSpeed(SG);
+	}
+}
+
 void Restaurant::Interactive()
 {
 	Fileloading();
@@ -235,21 +288,26 @@ void Restaurant::Interactive()
 		//The next line may add new orders to the DEMO_Queue
 		ExecuteEvents(CurrentTimeStep);	//execute all events at current time step
 		/////////////////////////////////////////////////////////////////////////////////////////
-		if(CurrentTimeStep % 5 == 0)
+		if (CurrentTimeStep % 5 == 0)
 		{
 			Order* pOrd;
 			VIP_InService_Queue.dequeue(pOrd);
 			VIP_Finished_Queue.enqueue(pOrd);
 
+			Normal_LinkedLlist_Finished.InsertEnd(Normal_LinkedLlist_InService.gethead()->getItem());
+			Normal_LinkedLlist_InService.DeleteFirst();
+
 			Vegan_InService_Queue.dequeue(pOrd);
 			Vegan_Finished_Queue.enqueue(pOrd);
-			
+
 		}
 		/////////////////////////////////////////////////////////////////////////////////////////
+		Cooks_data();
 		FillDrawingList();
 
 		pGUI->UpdateInterface();
-		Sleep(1000);
+		//Sleep(1000);
+		pGUI->waitForClick();
 		CurrentTimeStep++;	//advance timestep
 		pGUI->ResetDrawingList();
 	}
@@ -309,7 +367,7 @@ void Restaurant::Just_A_Demo()
 		O_id += (rand() % 4 + 1);
 		int OType = rand() % TYPE_CNT;	//Randomize order type		
 		EvTime += (rand() % 5 + 1);			//Randomize event time
-		pEv = new ArrivalEvent(EvTime, O_id, TYPE_VIP,3,2);//wrong
+		pEv = new ArrivalEvent(EvTime, O_id, TYPE_VIP, 3, 2);//wrong
 		EventsQueue.enqueue(pEv);
 	}
 
@@ -357,7 +415,8 @@ void Restaurant::Just_A_Demo()
 		/////////////////////////////////////////////////////////////////////////////////////////
 
 		pGUI->UpdateInterface();
-		Sleep(1000);
+		//Sleep(1000);
+		pGUI->waitForClick();
 		CurrentTimeStep++;	//advance timestep
 		pGUI->ResetDrawingList();
 	}
@@ -386,7 +445,7 @@ void Restaurant::Addto_Waiting_Queue(Order* pOrd)
 	}
 	else if (pOrd->GetType() == TYPE_NRM)
 	{
-		//Normal_LinkedLlist.InsertEnd(pOrd);
+		Normal_LinkedLlist_Waiting.InsertEnd(pOrd);
 	}
 	else
 	{
@@ -402,7 +461,7 @@ void Restaurant::Addto_InService_Queue(Order* pOrd)
 	}
 	else if (pOrd->GetType() == TYPE_NRM)
 	{
-		//Normal_LinkedLlist.InsertEnd(pOrd);
+		Normal_LinkedLlist_InService.InsertEnd(pOrd);
 	}
 	else
 	{
@@ -418,7 +477,7 @@ void Restaurant::Addto_Finished_Queue(Order* pOrd)
 	}
 	else if (pOrd->GetType() == TYPE_NRM)
 	{
-		//Normal_LinkedLlist.InsertEnd(pOrd);
+		Normal_LinkedLlist_Finished.InsertEnd(pOrd);
 	}
 	else
 	{

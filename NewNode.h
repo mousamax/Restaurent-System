@@ -1,6 +1,6 @@
 #pragma once
-#include"Defs.h"
-#include "Rest/Order.h"
+#include "..\Defs.h"
+#include "..\Rest\Order.h"
 template <class T>
 class NewNode
 {
@@ -67,3 +67,4 @@ int NewNode<T>::getpriority()
 {
 	return item.calcpriority();
 };
+

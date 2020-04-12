@@ -2,6 +2,7 @@
 #define __ARRIVAL_EVENT_H_
 
 #include "Event.h"
+#include "..\Rest\Restaurant.h"
 
 
 //class for the arrival event

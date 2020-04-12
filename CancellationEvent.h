@@ -1,8 +1,8 @@
 #pragma once
 #include <iostream>
-#include "Rest/Order.h"
-#include "Events/Event.h"
-#include "LinkedList.h"
+#include "..\Events\Event.h"
+#include "..\Rest\Restaurant.h"
+#include "..\Generic_DS\LinkedList.h"
 
 
 class CancellationEvent : public Event
@@ -14,7 +14,7 @@ class CancellationEvent : public Event
 	int ID;
 	LinkedList<Order*> Normal_LinkedLlist;
 public:
-	CancellationEvent(int TS, int id);
+	CancellationEvent(int, int);
 
 	virtual void Execute(Restaurant* pRest);	//override execute function
 

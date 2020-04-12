@@ -16,7 +16,9 @@ public:
 	ORD_TYPE GetType() const;
 	int GetBreakDuration() const;
 	void setID(int);
-	void setType(ORD_TYPE) ;
+	void setType(ORD_TYPE);
 	void setBreakDuration(int);
+	void setSpeed(int);
+	int GetSpeed();
 	
 };
